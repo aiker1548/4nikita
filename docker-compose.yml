@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx_container
+    ports:
+      - "8080:80" # Пробрасываем порт 80 Nginx на 8080 на хосте
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./php:/var/www/html # Привязываем папку с PHP-кодом
+
+  php:
+    image: richarvey/nginx-php-fpm:latest # Используем PHP с FastCGI Process Manager
+    container_name: php_container
+    volumes:
+      - ./php:/var/www/html # Привязываем папку с PHP-кодом
+    
+  
+  db:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+
